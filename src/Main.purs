@@ -4,10 +4,11 @@ import Prelude (Unit, ($), bind, show, (<>))
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 
-import Data.List(List(..), (:))
 import Text.Parsing.StringParser (runParser)
+import Text.Parsing.Parser (runParser) as Parser
 
 import Rad.GraphQL.Parser (document)
+import Rad.GraphQL.Parserer (document) as P
 
 foreign import timerStart :: forall e. String -> Eff (console :: CONSOLE | e) Unit
 foreign import timerEnd   :: forall e. String -> Eff (console :: CONSOLE | e) Unit
@@ -43,9 +44,29 @@ kitchenSink =
   <> "  my, fields, with(args: $test, arg2: MYENUM, arg3: [ MYENUM, MYENUM, MYENUM ])"
   <> "}"
 
+p :: String -> String
+p s = show $ Parser.runParser s P.document
+
 main :: forall e. Eff (console :: CONSOLE | e) Unit
 main = do
   log "Hello sailor!"
+
+  let x' = p tq
+  timerStart "parser"
+  let x' = p kitchenSink
+  timerEnd "parser"
+  timerStart "parser"
+  log $ p query
+  log $ p tq
+  log $ p kitchenSink
+  timerEnd "parser"
+  timerStart "parser"
+  log $ p query
+  log $ p tq
+  log $ p kitchenSink
+  log $ p kitchenSink
+  timerEnd "parser"
+
   let x = runParser document tq
   timerStart "stringparser"
   let x = runParser document kitchenSink
@@ -61,3 +82,21 @@ main = do
   log $ show $ runParser document kitchenSink
   log $ show $ runParser document kitchenSink
   timerEnd "stringparser"
+
+  let x' = p tq
+  timerStart "parser"
+  let x' = p kitchenSink
+  timerEnd "parser"
+  timerStart "parser"
+  log $ p query
+  log $ p tq
+  log $ p kitchenSink
+  timerEnd "parser"
+  timerStart "parser"
+  log $ p query
+  log $ p tq
+  log $ p kitchenSink
+  log $ p kitchenSink
+  timerEnd "parser"
+
+

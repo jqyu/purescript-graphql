@@ -7,7 +7,6 @@ import Prelude
   , unit
   , pure
   , bind
-  , const
   , negate
   , ($)
   , (>)
