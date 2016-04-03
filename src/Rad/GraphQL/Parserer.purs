@@ -128,9 +128,9 @@ selectionSet = fix \s -> braces $ some (selection s)
 
 selection :: Parser SelectionSet -> Parser Selection
 selection s = SelectionField <$> field s
-          <|> SelectionInlineFragment <$> inlineFragment s
-          <|> SelectionFragmentSpread <$> fragmentSpread
-          <?> "selection error!"
+     <|> try (SelectionInlineFragment <$> inlineFragment s )
+     <|>      SelectionFragmentSpread <$> fragmentSpread
+     <?>      "selection error!"
 
 field :: Parser SelectionSet -> Parser Field
 field s = Field <$> optempty (try alias)
